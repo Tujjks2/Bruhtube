@@ -1,0 +1,12 @@
+BRUHTUBE — БЫСТРЫЙ СТАРТ
+
+1. Распакуй BruhTube.zip.
+2. Открой README.md — там полная инструкция.
+3. Локально: python -m http.server 8000
+   затем http://localhost:8000
+4. Для регистрации и публикации видео подключи Supabase:
+   - выполни supabase.sql;
+   - добавь URL и anon/public key в supabase-config.js.
+5. Загрузи файлы в GitHub и включи Settings -> Pages.
+
+Не используй service_role key в браузере.

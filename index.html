@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>BruhTube — видео для всех</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Открыть меню">☰</button>
+  <a class="brand" href="#" id="homeLink"><span class="brand-icon">▶</span><span>Bruh<span class="brand-dark">Tube</span></span></a>
+  <form class="searchbar" id="searchForm"><input id="searchInput" placeholder="Введите запрос" aria-label="Поиск видео"><button aria-label="Найти">⌕</button></form>
+  <div class="header-actions"><button class="icon-btn" id="uploadTop" title="Загрузить видео">＋</button><button class="sign-btn" id="authOpen">Войти</button><div class="user-chip hidden" id="userChip">B</div></div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button class="side-link active" data-filter="home"><span>⌂</span> Главная</button>
+    <button class="side-link" data-filter="trending"><span>🔥</span> В тренде</button>
+    <button class="side-link" data-filter="subscriptions"><span>▣</span> Подписки</button>
+    <div class="side-divider"></div>
+    <div class="side-title">ТВОЯ БИБЛИОТЕКА</div>
+    <button class="side-link" data-filter="history"><span>◷</span> История</button>
+    <button class="side-link" data-filter="liked"><span>♡</span> Понравившиеся</button>
+    <button class="side-link" data-filter="my"><span>▤</span> Мои видео</button>
+    <div class="sidebar-bottom">BruhTube · версия 1.0<br><small>Смотри. Создавай. Делись.</small></div>
+  </aside>
+
+  <main class="content">
+    <div class="chips" id="chips">
+      <button class="chip selected" data-category="Все">Все</button>
+      <button class="chip" data-category="Игры">Игры</button>
+      <button class="chip" data-category="Музыка">Музыка</button>
+      <button class="chip" data-category="Развлечения">Развлечения</button>
+      <button class="chip" data-category="Обучение">Обучение</button>
+      <button class="chip" data-category="Технологии">Технологии</button>
+      <button class="chip" data-category="Спорт">Спорт</button>
+    </div>
+    <section id="homeSection">
+      <div class="section-head"><div><span class="overline">СМОТРИ, ЧТО НРАВИТСЯ</span><h1 id="sectionTitle">Рекомендации</h1></div><span class="muted" id="resultCount"></span></div>
+      <div class="video-grid" id="videoGrid"></div>
+      <div class="empty hidden" id="emptyState"><div>🎬</div><h2>Видео не найдены</h2><p>Попробуй другой запрос или загрузи первое видео.</p><button class="primary-btn" id="emptyUpload">Загрузить видео</button></div>
+    </section>
+    <section class="watch-section hidden" id="watchSection">
+      <button class="back-link" id="backHome">← Назад к видео</button>
+      <div class="watch-layout">
+        <div class="watch-main">
+          <video id="videoPlayer" controls playsinline></video>
+          <h1 id="watchTitle"></h1>
+          <div class="watch-meta"><div class="channel-avatar" id="watchAvatar">B</div><div class="channel-text"><strong id="watchChannel"></strong><small id="watchViews"></small></div><button class="primary-btn subscribe-btn" id="subscribeBtn">Подписаться</button><div class="watch-spacer"></div><button class="action-btn" id="likeBtn">♡ Нравится</button></div>
+          <div class="description" id="watchDescription"></div>
+          <div class="comments"><h3>Комментарии</h3><p class="muted">Комментарии появятся после подключения аккаунтов и базы данных.</p></div>
+        </div>
+        <aside class="up-next"><h3>Следующее</h3><div id="relatedVideos"></div></aside>
+      </div>
+    </section>
+    <section class="upload-section hidden" id="uploadSection">
+      <button class="back-link" id="uploadBack">← Назад</button>
+      <div class="upload-card">
+        <span class="overline">ТВОЯ ТВОРЧЕСКАЯ СТУДИЯ</span><h1>Загрузить видео</h1>
+        <p class="muted">Поделись своим роликом с сообществом BruhTube.</p>
+        <form id="uploadForm">
+          <label class="dropzone" for="videoFile"><div class="upload-symbol">⬆</div><strong>Выбери видеофайл</strong><span>MP4, WebM или MOV · до 100 МБ</span><input id="videoFile" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
+          <div class="form-fields"><label>Название видео<input id="videoTitle" maxlength="100" placeholder="Например: Мой первый ролик" required></label><label>Описание<textarea id="videoDescription" rows="4" maxlength="1000" placeholder="Расскажи о своём видео..."></textarea></label><label>Категория<select id="videoCategory"><option>Развлечения</option><option>Игры</option><option>Музыка</option><option>Обучение</option><option>Технологии</option><option>Спорт</option></select></label><button class="primary-btn" type="submit" id="publishBtn">Опубликовать видео</button><p class="muted tiny" id="uploadStatus">Для публикации в интернете настрой Supabase по инструкции README.</p></div>
+        </form>
+      </div>
+    </section>
+    <section class="simple-section hidden" id="simpleSection"><span class="overline">ТВОЙ BRUHTUBE</span><h1 id="simpleTitle">Моя библиотека</h1><p class="muted" id="simpleText">Войди в аккаунт, чтобы пользоваться этой функцией.</p></section>
+  </main>
+</div>
+
+<dialog id="authDialog">
+  <form method="dialog" class="dialog-top"><button class="close-btn" aria-label="Закрыть">×</button></form>
+  <span class="overline">АККАУНТ BRUHTUBE</span><h2 id="authHeading">С возвращением!</h2><p class="muted">Войди или создай аккаунт, чтобы публиковать видео.</p>
+  <form id="authForm" class="auth-form"><input id="authEmail" type="email" placeholder="Электронная почта" required><input id="authPassword" type="password" placeholder="Пароль (минимум 6 символов)" minlength="6" required><button class="primary-btn" id="authSubmit">Войти</button></form>
+  <button class="switch-auth" id="switchAuth">Нет аккаунта? Зарегистрироваться</button><p id="authMessage" class="muted tiny"></p>
+</dialog>
+<div class="toast" id="toast"></div>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
